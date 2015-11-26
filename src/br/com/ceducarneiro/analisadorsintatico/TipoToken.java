@@ -1,15 +1,21 @@
-package br.com.ceducarneiro.analisadorlexico;
+package br.com.ceducarneiro.analisadorsintatico;
 
 public enum TipoToken {
-
-    PAR_AB("PAR_AB"),
-    PAR_FE("PAR_FE"),
-    SOMA("SOMA"),
-    SUB("SUB"),
-    MULT("MULT"),
-    DIV("DIV"),
+    MAIN("MAIN"),
+    ABRE_BLOCO("ABRE_BLOCO"),
+    FECHA_BLOCO("FECHA_BLOCO"),
+    ENTRADA("ENTRADA"),
+    SAIDA("SAIDA"),
+    FMT_NUM("FMT_NUM"),
+    FMT_STRING("FMT_STRING"),
+    TIPO_INT("TIPO_INT"),
+    ENDERECO("ENDERECO"),
+    FIM_COMANDO("FIM_COMANDO"),
+    VIRGULA("VIRGULA"),
+    ABRE_PAR("ABRE_PAR"),
+    FECHA_PAR("FECHA_PAR"),
     ID("ID"),
-    NUM("NUM");
+    STRING("STRING");
 
     String tipoStr;
 

@@ -1,4 +1,4 @@
-package br.com.ceducarneiro.analisadorlexico;
+package br.com.ceducarneiro.analisadorsintatico;
 
 public class Token {
 
