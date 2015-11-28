@@ -6,6 +6,7 @@ public enum TipoToken {
     FECHA_BLOCO("FECHA_BLOCO"),
     ENTRADA("ENTRADA"),
     SAIDA("SAIDA"),
+    IF("IF"),
     FMT_NUM("FMT_NUM"),
     FMT_STRING("FMT_STRING"),
     TIPO_INT("TIPO_INT"),
@@ -15,6 +16,14 @@ public enum TipoToken {
     ABRE_PAR("ABRE_PAR"),
     FECHA_PAR("FECHA_PAR"),
     ID("ID"),
+    OP_ATRIBUICAO("OP_ATRIBUICAO"),
+    OP_SOMA("OP_SOMA"),
+    OP_IGUALDADE("OP_IGUALDADE"),
+    OP_DIFERENCA("OP_DIFERENCA"),
+    OP_MAIOR_QUE("OP_MAIOR_QUE"),
+    OP_MENOR_QUE("OP_MENOR_QUE"),
+    OP_MAIOR_IGUAL_QUE("OP_MAIOR_IGUAL_QUE"),
+    OP_MENOR_IGUAL_QUE("OP_MENOR_IGUAL_QUE"),
     STRING("STRING");
 
     String tipoStr;
@@ -28,3 +37,4 @@ public enum TipoToken {
         return tipoStr;
     }
 }
+

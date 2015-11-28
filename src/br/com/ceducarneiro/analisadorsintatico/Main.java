@@ -1,17 +1,28 @@
 package br.com.ceducarneiro.analisadorsintatico;
 
+import java.io.*;
+
 public class Main {
 
     private static Analisador lex;
-    private static int waitingToken = 0;
-
+    private static BufferedWriter out;
+    private static String comando = "";
+    private static int bloco = 0;
 
     public static void main(String[] args) throws LexException, SinException {
-        if (args.length == 1) {
+        if (args.length == 2) {
             lex = new Analisador(args[0]);
 
-            S(lex.nextToken());
-            System.out.println("Parece que talvez dependendo de como foi pode ser que suportamente em uma hipótese qualquer deu certo.");
+            try {
+                FileWriter writer = null;
+                writer = new FileWriter(new File(args[1]));
+                out = new BufferedWriter(writer);
+                S(lex.nextToken());
+                out.close();
+                System.out.println("Compilado!");
+            } catch (IOException e) {
+                System.out.println("Não foi possível gerar o arquivo de saída.");
+            }
         }
     }
 
@@ -91,7 +102,8 @@ public class Main {
 
     public static void LISTA_COMANDOS(Token token) throws LexException, SinException {
         if (token != null) {
-            if (token.tipo == TipoToken.ENTRADA || token.tipo == TipoToken.SAIDA) {
+            if (token.tipo == TipoToken.ENTRADA || token.tipo == TipoToken.SAIDA
+                    || token.tipo == TipoToken.ID || token.tipo == TipoToken.IF) {
                 COMANDO(token);
                 LISTA_COMANDOS(lex.nextToken());
             } else {
@@ -105,13 +117,174 @@ public class Main {
             ENTRADA(token);
         } else if (token != null && token.tipo == TipoToken.SAIDA) {
             SAIDA(token);
+        } else if (token != null && token.tipo == TipoToken.IF) {
+            IF(token);
+        } else if (token != null && token.tipo == TipoToken.ID) {
+            ATRIBUICAO(token);
         } else {
             throw new SinException(token, TipoToken.ENTRADA);
         }
     }
 
+    public static void IF(Token token) throws LexException, SinException {
+        if (token != null && token.tipo == TipoToken.IF) {
+            comando = "if ";
+            token = lex.nextToken();
+            if (token != null && token.tipo == TipoToken.ABRE_PAR) {
+                EXP_LOGICA(lex.nextToken());
+                comando += ":";
+                escreverComando(comando);
+                token = lex.nextToken();
+                if (token != null && token.tipo == TipoToken.FECHA_PAR) {
+                    bloco++;
+                    BLOCO(lex.nextToken());
+                    bloco--;
+                } else {
+                    throw new SinException(token, TipoToken.FECHA_PAR);
+                }
+            } else {
+                throw new SinException(token, TipoToken.ABRE_PAR);
+            }
+        } else {
+            throw new SinException(token, TipoToken.IF);
+        }
+    }
+
+    public static void EXP_LOGICA(Token token) throws LexException, SinException {
+        if (token != null && token.tipo == TipoToken.ID) {
+            comando += token.lexema;
+            RESTO_EXP_LOGICA(lex.nextToken());
+        } else {
+            throw new SinException(token, TipoToken.ID);
+        }
+    }
+
+    public static void RESTO_EXP_LOGICA(Token token) throws LexException, SinException {
+        if (token != null && token.tipo == TipoToken.OP_MAIOR_QUE) {
+            comando += " > ";
+            token = lex.nextToken();
+            if (token != null && token.tipo == TipoToken.ID) {
+                /* All right! */
+                comando += token.lexema;
+            } else {
+                throw new SinException(token, TipoToken.ID);
+            }
+        } else if (token != null && token.tipo == TipoToken.OP_MAIOR_IGUAL_QUE) {
+            comando += " >= ";
+            token = lex.nextToken();
+            if (token != null && token.tipo == TipoToken.ID) {
+                /* All right! */
+                comando += token.lexema;
+            } else {
+                throw new SinException(token, TipoToken.ID);
+            }
+        } else if (token != null && token.tipo == TipoToken.OP_MENOR_QUE) {
+            comando += " < ";
+            token = lex.nextToken();
+            if (token != null && token.tipo == TipoToken.ID) {
+                /* All right! */
+                comando += token.lexema;
+            } else {
+                throw new SinException(token, TipoToken.ID);
+            }
+        } else if (token != null && token.tipo == TipoToken.OP_MENOR_IGUAL_QUE) {
+            comando += " <= ";
+            token = lex.nextToken();
+            if (token != null && token.tipo == TipoToken.ID) {
+                /* All right! */
+                comando += token.lexema;
+            } else {
+                throw new SinException(token, TipoToken.ID);
+            }
+        } else if (token != null && token.tipo == TipoToken.OP_IGUALDADE) {
+            comando += " == ";
+            token = lex.nextToken();
+            if (token != null && token.tipo == TipoToken.ID) {
+                /* All right! */
+                comando += token.lexema;
+            } else {
+                throw new SinException(token, TipoToken.ID);
+            }
+        } else if (token != null && token.tipo == TipoToken.OP_DIFERENCA) {
+            comando += " != ";
+            token = lex.nextToken();
+            if (token != null && token.tipo == TipoToken.ID) {
+                /* All right! */
+                comando += token.lexema;
+            } else {
+                throw new SinException(token, TipoToken.ID);
+            }
+        } else {
+            throw new SinException(token, TipoToken.OP_MAIOR_QUE);
+        }
+    }
+
+    public static void escreverComando(String comando) {
+        try {
+            for (int idx = 0; idx < bloco; idx++) {
+                out.write("  ");
+            }
+
+            out.write(comando);
+            out.newLine();
+        } catch (IOException e) {
+            System.out.println("Erro na escrita do arquivo de saída.");
+        }
+    }
+
+    public static void ATRIBUICAO(Token token) throws LexException, SinException {
+        if (token != null && token.tipo == TipoToken.ID) {
+            comando = token.lexema;
+            token = lex.nextToken();
+            if (token.tipo == TipoToken.OP_ATRIBUICAO) {
+                comando += " = ";
+                EXP(lex.nextToken());
+                token = lex.nextToken();
+                if (token.tipo == TipoToken.FIM_COMANDO) {
+                    /* All right! */
+                    escreverComando(comando);
+                } else {
+                    throw new SinException(token, TipoToken.FIM_COMANDO);
+                }
+            } else {
+                throw new SinException(token, TipoToken.OP_ATRIBUICAO);
+            }
+        } else {
+            throw new SinException(token, TipoToken.ID);
+        }
+    }
+
+    public static void EXP(Token token) throws LexException, SinException {
+        SOMA(token);
+    }
+
+    public static void SOMA(Token token) throws LexException, SinException {
+        if (token != null && token.tipo == TipoToken.ID) {
+            comando += token.lexema;
+            RESTO_SOMA(lex.nextToken());
+        } else {
+            throw new SinException(token, TipoToken.ID);
+        }
+    }
+
+    public static void RESTO_SOMA(Token token) throws LexException, SinException {
+        if (token != null && token.tipo == TipoToken.OP_SOMA) {
+            token = lex.nextToken();
+            comando += " + ";
+            if (token != null && token.tipo == TipoToken.ID) {
+                comando += token.lexema;
+                RESTO_SOMA(lex.nextToken());
+            } else {
+                throw new SinException(token, TipoToken.ID);
+            }
+        } else {
+            lex.revertToken(token);
+        }
+    }
+
     public static void ENTRADA(Token token) throws LexException, SinException {
         if (token != null && token.tipo == TipoToken.ENTRADA) {
+            comando = "";
             token = lex.nextToken();
             if (token.tipo == TipoToken.ABRE_PAR) {
                 PARAMS_ENTRADA(lex.nextToken());
@@ -120,6 +293,8 @@ public class Main {
                     token = lex.nextToken();
                     if (token.tipo == TipoToken.FIM_COMANDO) {
                         /* All right! */
+                        comando += " = int(input())";
+                        escreverComando(comando);
                     } else {
                         throw new SinException(token, TipoToken.FIM_COMANDO);
                     }
@@ -143,6 +318,7 @@ public class Main {
                     token = lex.nextToken();
                     if (token != null && token.tipo == TipoToken.ID) {
                         /* All right! */
+                        comando = token.lexema;
                     } else {
                         throw new SinException(token, TipoToken.ID);
                     }
@@ -159,6 +335,8 @@ public class Main {
 
     public static void SAIDA(Token token) throws LexException, SinException {
         if (token != null && token.tipo == TipoToken.SAIDA) {
+            comando = "print(";
+
             token = lex.nextToken();
             if (token.tipo == TipoToken.ABRE_PAR) {
                 PARAMS_SAIDA(lex.nextToken());
@@ -167,6 +345,8 @@ public class Main {
                     token = lex.nextToken();
                     if (token.tipo == TipoToken.FIM_COMANDO) {
                         /* All right! */
+                        comando += ")";
+                        escreverComando(comando);
                     } else {
                         throw new SinException(token, TipoToken.FIM_COMANDO);
                     }
@@ -188,6 +368,7 @@ public class Main {
                 token = lex.nextToken();
                 if (token != null && token.tipo == TipoToken.ID) {
                     /* All right! */
+                    comando += token.lexema;
                 } else {
                     throw new SinException(token, TipoToken.ID);
                 }
@@ -200,6 +381,7 @@ public class Main {
                 token = lex.nextToken();
                 if (token != null && token.tipo == TipoToken.STRING) {
                     /* All right! */
+                    comando += token.lexema;
                 } else {
                     throw new SinException(token, TipoToken.STRING);
                 }

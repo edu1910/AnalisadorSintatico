@@ -76,6 +76,10 @@ public class Analisador {
                             token = new Token(TipoToken.FECHA_BLOCO);
                         else if (ch == ';')
                             token = new Token(TipoToken.FIM_COMANDO);
+                        else if (ch == '+')
+                            token = new Token(TipoToken.OP_SOMA);
+                        else if (ch == '=')
+                            estado = 25;
                         else if (ch == 'm')
                             estado = 1;
                         else if (ch == 'i')
@@ -88,6 +92,12 @@ public class Analisador {
                             estado = 19;
                         else if (ch == '"')
                             estado = 20;
+                        else if (ch == '!')
+                            estado = 27;
+                        else if (ch == '<')
+                            estado = 28;
+                        else if (ch == '>')
+                            estado = 29;
                         else if (!Character.isWhitespace(ch) && ch != 0)
                             throw new LexException(line, idx, ch);
                         break;
@@ -101,7 +111,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -117,7 +127,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -133,7 +143,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -147,7 +157,7 @@ public class Analisador {
                         if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.MAIN);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -160,10 +170,12 @@ public class Analisador {
 
                         if (ch == 'n')
                             estado = 6;
+                        else if (ch == 'f')
+                            estado = 26;
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -179,7 +191,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -193,7 +205,7 @@ public class Analisador {
                         if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.TIPO_INT);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -209,7 +221,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -225,7 +237,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -241,7 +253,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -257,7 +269,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -271,7 +283,7 @@ public class Analisador {
                         if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ENTRADA);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -287,7 +299,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -303,7 +315,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -319,7 +331,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -335,7 +347,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -351,7 +363,7 @@ public class Analisador {
                         else if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -365,7 +377,7 @@ public class Analisador {
                         if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.SAIDA);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         } else {
@@ -379,7 +391,7 @@ public class Analisador {
                         if (!Character.isLetterOrDigit(ch) && ch != '_') {
                             token = new Token(TipoToken.ID, lexema);
 
-                            if (ch != 0) {
+                            if (ch != 0 && idx > 0) {
                                 idx--;
                             }
                         }
@@ -443,6 +455,70 @@ public class Analisador {
                         else
                             throw new LexException(line, idx, ch);
                         break;
+                    case 25:
+                        lexema += ch;
+                        readCh();
+
+                        if (ch == '=')
+                            token = new Token(TipoToken.OP_IGUALDADE);
+                        else {
+                            token = new Token(TipoToken.OP_ATRIBUICAO);
+
+                            if (ch != 0 && idx > 0) {
+                                idx--;
+                            }
+                        }
+                        break;
+                    case 26:
+                        lexema += ch;
+                        readCh();
+
+                        if (!Character.isLetterOrDigit(ch) && ch != '_') {
+                            token = new Token(TipoToken.IF);
+
+                            if (ch != 0 && idx > 0) {
+                                idx--;
+                            }
+                        } else {
+                            estado = 19;
+                        }
+                        break;
+                    case 27:
+                        lexema += ch;
+                        readCh();
+
+                        if (ch == '=')
+                            token = new Token(TipoToken.OP_DIFERENCA);
+                        else
+                            throw new LexException(line, idx, ch);
+                        break;
+                    case 28:
+                        lexema += ch;
+                        readCh();
+
+                        if (ch == '=')
+                            token = new Token(TipoToken.OP_MENOR_IGUAL_QUE);
+                        else {
+                            token = new Token(TipoToken.OP_MENOR_QUE);
+
+                            if (ch != 0 && idx > 0) {
+                                idx--;
+                            }
+                        }
+                        break;
+                    case 29:
+                        lexema += ch;
+                        readCh();
+
+                        if (ch == '=')
+                            token = new Token(TipoToken.OP_MAIOR_IGUAL_QUE);
+                        else {
+                            token = new Token(TipoToken.OP_MAIOR_QUE);
+
+                            if (ch != 0 && idx > 0) {
+                                idx--;
+                            }
+                        }
                 }
             }
 
